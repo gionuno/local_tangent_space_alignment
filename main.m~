@@ -50,7 +50,7 @@ for i = 1:size(max_I,1)
     end
 end
 
-k = 50;
+k = 15;
 d = 2;
 
 [T,B,idxNN] = ltsa(X,k,d);
@@ -59,4 +59,4 @@ figure;
 spy(B);
 
 figure;
-scatter(T(:,1),T(:,2),5,C);
+scatter(T(:,1),T(:,2),12,C);
