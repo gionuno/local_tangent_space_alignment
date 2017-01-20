@@ -15,3 +15,7 @@ These are the coordinates that were found using LTSA, compared with the [0,1] in
 So, using the same image as for the LLE example, we find this embedding with LTSA:
 
 ![image](res_purple_stp_25.jpg)
+
+And finally, using 6 categories from the COIL-100 dataset, I apply this algorithm with k=40 and receive the following alignment:
+
+![image](res_coil_40.jpg)

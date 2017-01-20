@@ -60,3 +60,45 @@ spy(B);
 
 figure;
 scatter(T(:,1),T(:,2),5,C);
+
+DIR = dir('coil_100');
+X = [];
+C = [];
+w = 16;
+dirs = [];
+for i = 3:length(DIR)
+    dirname = strcat('coil_100/',DIR(i).name);
+    AUX_DIR = dir(dirname);
+    dirs = [dirs, DIR(i).name];
+    for j = 3:length(AUX_DIR)
+        auxfilename = strcat(dirname,'/',AUX_DIR(j).name);
+        aux = double(imread(auxfilename))/255.0;
+        aux2 = zeros([size(aux,1)/w,size(aux,2)/w,2*size(aux,3)]);
+        for k = 0:size(aux2,1)-1
+            for l = 0:size(aux2,2)-1
+                aux2(k+1,l+1,1:size(aux,3))     = max(max(aux(w*k+1:w*k+w,w*l+1:w*l+w,:)));               
+                aux2(k+1,l+1,size(aux,3)+1:end) = min(min(aux(w*k+1:w*k+w,w*l+1:w*l+w,:)));
+            end
+        end
+        %d = size(aux2);
+        X = [X ; reshape(aux2,[1,numel(aux2)])];
+        C = [C ; i-3];
+    end
+end
+
+k = 40;
+d = 3;
+[T,B,idxNN] = ltsa(X,k,d);
+
+figure;
+spy(B);
+
+figure;
+hold on;
+grid on;
+for i = 3:length(DIR)
+    idx = (C == i-3);
+    scatter3(T(idx,1),T(idx,2),T(idx,3),5,'DisplayName',DIR(i).name);
+end
+legend(gca,'show');
+hold off;
