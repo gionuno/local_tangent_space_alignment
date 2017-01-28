@@ -50,7 +50,7 @@ for i = 1:size(max_I,1)
     end
 end
 
-k = 50;
+k = 100;
 d = 2;
 
 [T,B,idxNN] = ltsa(X,k,d);
@@ -73,20 +73,25 @@ for i = 3:length(DIR)
     for j = 3:length(AUX_DIR)
         auxfilename = strcat(dirname,'/',AUX_DIR(j).name);
         aux = double(imread(auxfilename))/255.0;
-        aux2 = zeros([size(aux,1)/w,size(aux,2)/w,2*size(aux,3)]);
-        for k = 0:size(aux2,1)-1
-            for l = 0:size(aux2,2)-1
-                aux2(k+1,l+1,1:size(aux,3))     = max(max(aux(w*k+1:w*k+w,w*l+1:w*l+w,:)));               
-                aux2(k+1,l+1,size(aux,3)+1:end) = min(min(aux(w*k+1:w*k+w,w*l+1:w*l+w,:)));
+        
+        mean_aux = zeros([size(aux,1)/w,size(aux,2)/w,size(aux,3)]);
+        min_aux  = zeros([size(aux,1)/w,size(aux,2)/w,size(aux,3)]);
+        max_aux  = zeros([size(aux,1)/w,size(aux,2)/w,size(aux,3)]);
+        for k = 0:size(mean_aux,1)-1
+            for l = 0:size(mean_aux,2)-1
+                aux3 = aux(w*k+1:w*k+w,w*l+1:w*l+w,:);
+                mean_aux(k+1,l+1,:) = mean(mean(aux3));
+                min_aux(k+1,l+1,:)  = min(min(aux3));
+                max_aux(k+1,l+1,:)  = max(max(aux3));
             end
         end
         %d = size(aux2);
-        X = [X ; reshape(aux2,[1,numel(aux2)])];
+        X = [X ; reshape(min_aux,[1,numel(min_aux)]),reshape(mean_aux,[1,numel(mean_aux)]),reshape(max_aux,[1,numel(max_aux)]) ];
         C = [C ; i-3];
     end
 end
 
-k = 40;
+k = 200;
 d = 3;
 [T,B,idxNN] = ltsa(X,k,d);
 
@@ -98,7 +103,8 @@ hold on;
 grid on;
 for i = 3:length(DIR)
     idx = (C == i-3);
-    scatter3(T(idx,1),T(idx,2),T(idx,3),5,'DisplayName',DIR(i).name);
+    scatter3(T(idx,1),T(idx,2),T(idx,3),7,C(idx),'filled','MarkerEdgeColor','k','DisplayName',DIR(i).name);
 end
+colormap(colorcube);
 legend(gca,'show');
 hold off;

@@ -86,7 +86,7 @@ for i = 3:length(DIR)
     end
 end
 
-k = 40;
+k = 100;
 d = 3;
 [T,B,idxNN] = ltsa(X,k,d);
 
@@ -94,7 +94,12 @@ figure;
 spy(B);
 
 figure;
-for i = 3:
-h = scatter3(T(:,1),T(:,2),T(:,3),5,C+1);
-colormap(jet);
+hold on;
+grid on;
+for i = 3:length(DIR)
+    idx = (C == i-3);
+    scatter3(T(idx,1),T(idx,2),T(idx,3),7,'MarkerFaceColor',C(idx),'MarkerEdgeColor','k','DisplayName',DIR(i).name);
+end
+colormap(colorcube);
 legend(gca,'show');
+hold off;
